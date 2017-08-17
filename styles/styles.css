@@ -1,3 +1,39 @@
 body {
-	background: #BBA5D0;
+	background: #6991C6;
+}
+
+table {
+	margin: 2em auto;
+}
+
+td {
+	height: 4em;
+	width: 4em;
+	font-size: 2em;
+	text-transform: uppercase;
+}
+
+/*top and bottom border for middle row*/
+tr:nth-of-type(2) td {
+	border-bottom: 2px solid black;
+	border-top: 2px solid black;
+}
+
+/*left and right border for middle column*/
+tr td:nth-of-type(2) {
+	border-right: 2px solid black;
+	border-left: 2px solid black;
+}
+
+/*hover over a square to see its borders*/
+tr td:hover {
+  background: #5285C4;
+}
+
+.vertical-center {
+  min-height: 100%;
+  min-height: 100vh; 
+  display: flex;
+  align-items: center;
+  text-align: center;
 }
