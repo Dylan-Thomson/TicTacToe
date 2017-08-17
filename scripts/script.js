@@ -1,13 +1,14 @@
 // Document Ready
 $(function() {
-	addMove();
+	playerMove();
+	initResetListener();
 });
 
 var turnX = true;
 var tds = $("td");
 var x = "x", o = "o";
 
-function addMove() {
+function playerMove() {
 	$("td").on("click", function() {
 		if(!$(this).hasClass(x) && !$(this).hasClass(o)) {
 			if(turnX) {
@@ -24,6 +25,15 @@ function addMove() {
 	});
 }
 
+function initResetListener() {
+	$("#reset").on("click", function() {
+		$("td").removeClass(x);
+		$("td").removeClass(o);
+		$("td").text("");
+	});
+}
+
 function checkForWinner() {
+	console.log($("tr:nth-of-type(2) td"));
 }
 
