@@ -43,11 +43,11 @@ function initResetListener() {
 
 // check if last move ends game
 function gameOver(lastMove) {
-		if(checkForWinner()) {
+	if(checkForWinner()) {
 		alert(lastMove.attr("class") + " has won!");
 		$("#reset").trigger("click");
+		return;
 	}
-
 	if(checkForDraw()) {
 		alert("Draw...");
 		$("#reset").trigger("click");
