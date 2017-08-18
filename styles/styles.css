@@ -21,12 +21,12 @@ tr:nth-of-type(2) td {
 }
 
 /*left and right border for middle column*/
-tr td:nth-of-type(2) {
+td:nth-of-type(2) {
 	border-right: .1em solid #283767;
 	border-left: .1em solid #283767;
 }
 
-tr td:hover {
+td:hover {
   background: #5285C4;
 }
 
