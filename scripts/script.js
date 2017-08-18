@@ -28,16 +28,7 @@ function initPlayerMoveListeners() {
 				$(this).text("o");
 			}
 			turnX = !turnX;
-
-			if(checkForWinner()) {
-				alert($(this).attr("class") + " has won!");
-				$("#reset").trigger("click");
-			}
-
-			if(checkForDraw()) {
-				alert("Draw...");
-				$("#reset").trigger("click");
-			}
+			gameOver($(this));
 		}
 	});
 }
@@ -48,6 +39,19 @@ function initResetListener() {
 		$("td").text("");
 		turnX = true;
 	});
+}
+
+// check if last move ends game
+function gameOver(lastMove) {
+		if(checkForWinner()) {
+		alert(lastMove.attr("class") + " has won!");
+		$("#reset").trigger("click");
+	}
+
+	if(checkForDraw()) {
+		alert("Draw...");
+		$("#reset").trigger("click");
+	}
 }
 
 // check each win condition to see if met
