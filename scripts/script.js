@@ -1,20 +1,14 @@
 var turnX = true;
 var tds = $("td");
 var winConditions = [];
-winConditions.push($("tr:nth-of-type(1) td")); // row 1
-winConditions.push($("tr:nth-of-type(2) td")); // row 2
-winConditions.push($("tr:nth-of-type(3) td")); // row 3
-winConditions.push($("td:nth-of-type(1)")); // col 1
-winConditions.push($("td:nth-of-type(2)")); // col 2
-winConditions.push($("td:nth-of-type(3)")); // col 3
-winConditions.push($("tr:nth-of-type(1) td:nth-of-type(1), tr:nth-of-type(2) td:nth-of-type(2), tr:nth-of-type(3) td:nth-of-type(3)")); // diag L->R
-winConditions.push($("tr:nth-of-type(1) td:nth-of-type(3), tr:nth-of-type(2) td:nth-of-type(2), tr:nth-of-type(3) td:nth-of-type(1)")); // diag R->L
 
 // Document Ready
 $(function() {
 	initPlayerMoveListeners();
 	initResetListener();
+	initWinConditions();
 });
+
 
 function initPlayerMoveListeners() {
 	$("td").on("click", function() {
@@ -34,23 +28,34 @@ function initPlayerMoveListeners() {
 }
 
 function initResetListener() {
-	$("#reset").on("click", function() {
+	$(".reset").on("click", function() {
 		$("td").removeAttr("class");
 		$("td").text("");
 		turnX = true;
 	});
 }
 
+function initWinConditions() {
+	winConditions.push($("tr:nth-of-type(1) td")); // row 1
+	winConditions.push($("tr:nth-of-type(2) td")); // row 2
+	winConditions.push($("tr:nth-of-type(3) td")); // row 3
+	winConditions.push($("td:nth-of-type(1)")); // col 1
+	winConditions.push($("td:nth-of-type(2)")); // col 2
+	winConditions.push($("td:nth-of-type(3)")); // col 3
+	winConditions.push($("tr:nth-of-type(1) td:nth-of-type(1), tr:nth-of-type(2) td:nth-of-type(2), tr:nth-of-type(3) td:nth-of-type(3)")); // diag L->R
+	winConditions.push($("tr:nth-of-type(1) td:nth-of-type(3), tr:nth-of-type(2) td:nth-of-type(2), tr:nth-of-type(3) td:nth-of-type(1)")); // diag R->L
+}
+
 // check if last move ends game
 function gameOver(lastMove) {
 	if(checkForWinner()) {
 		alert(lastMove.attr("class") + " has won!");
-		$("#reset").trigger("click");
+		$(".reset").trigger("click");
 		return;
 	}
 	if(checkForDraw()) {
 		alert("Draw...");
-		$("#reset").trigger("click");
+		$(".reset").trigger("click");
 	}
 }
 
