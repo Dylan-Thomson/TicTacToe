@@ -4,13 +4,20 @@ var winConditions = [];
 
 // Document Ready
 $(function() {
-	initPlayerMoveListeners();
-	initResetListener();
 	initWinConditions();
+	initGameModeListeners();
+	initMoveListeners();
+	initResetListener();
+	initNewGameListener();
 });
 
+function initGameModeListeners() {
+	$(".two-player").on("click", function() {
+		displayBoard();
+	});
+}
 
-function initPlayerMoveListeners() {
+function initMoveListeners() {
 	$("td").on("click", function() {
 		if(!$(this).hasClass("x") && !$(this).hasClass("o")) {
 			if(turnX) {
@@ -32,6 +39,14 @@ function initResetListener() {
 		$("td").removeAttr("class");
 		$("td").text("");
 		turnX = true;
+		displayStart();
+	});
+}
+
+function initNewGameListener() {
+	$(".new-game").on("click", function() {
+		displayStart();
+		$(".reset").trigger("click");
 	});
 }
 
@@ -49,13 +64,13 @@ function initWinConditions() {
 // check if last move ends game
 function gameOver(lastMove) {
 	if(checkForWinner()) {
-		alert(lastMove.attr("class") + " has won!");
-		$(".reset").trigger("click");
+		$(".game-over-msg").text(lastMove.attr("class") + " has won!");
+		displayGameOver();
 		return;
 	}
 	if(checkForDraw()) {
-		alert("Draw...");
-		$(".reset").trigger("click");
+		$(".game-over-msg").text("Draw...");
+		displayGameOver();
 	}
 }
 
@@ -92,4 +107,22 @@ function checkForDraw() {
 		}
 	}
 	return true;
+}
+
+function displayBoard() {
+	$(".board").removeClass("hidden");
+	$(".select-game-mode").addClass("hidden");
+	$(".game-over").addClass("hidden");
+}
+
+function displayStart() {
+	$(".select-game-mode").removeClass("hidden");
+	$(".board").addClass("hidden");
+	$(".game-over").addClass("hidden");
+}
+
+function displayGameOver() {
+	$(".game-over").removeClass("hidden");
+	$(".select-game-mode").addClass("hidden");
+	$(".board").addClass("hidden");
 }
