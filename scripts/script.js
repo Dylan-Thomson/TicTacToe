@@ -151,9 +151,10 @@ function easyAIMove() {
 	var randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
 
 	// make move
-	window.setTimeout(function() {
 		$("td:eq(" + tds.toArray().indexOf(randomEmptySquare) + ")").trigger("click");
-	}, 500);
+	// window.setTimeout(function() {
+	// 	$("td:eq(" + tds.toArray().indexOf(randomEmptySquare) + ")").trigger("click");
+	// }, 500);
 }
 
 function hardAIMove() {
