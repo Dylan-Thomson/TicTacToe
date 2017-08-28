@@ -11,7 +11,6 @@ $(function() {
 	initGameModeListeners();
 	initMoveListeners();
 	initResetListener();
-	initNewGameListener();
 	initSelectXOListeners();
 });
 
@@ -55,19 +54,13 @@ function endTurn(lastMove) {
 	}
 }
 
+// Reset board and turnX, display start screen
 function initResetListener() {
-	$(".reset").on("click", function() {
+	$(".reset, .new-game").on("click", function() {
 		$("td").removeAttr("class");
 		$("td").text("");
 		turnX = true;
 		displayStart();
-	});
-}
-
-function initNewGameListener() {
-	$(".new-game").on("click", function() {
-		displayStart();
-		$(".reset").trigger("click");
 	});
 }
 
