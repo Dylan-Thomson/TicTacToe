@@ -83,7 +83,7 @@ function move(square) {
 		turnX = ! turnX;
 		console.log(board);
 
-		if(winner(board)) {
+		if(winner(board, player)) {
 			$(".game-over-msg").text(player + " has won!");
 			fadeScreen(".board", ".game-over", reset);
 		}
@@ -104,9 +104,9 @@ function reset() {
 	board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 }
 
-function winner(board) {
+function winner(board, player) {
 	for(var i = 0; i < winConditions.length; i++) {
-		if(board[winConditions[i][0]] == board[winConditions[i][1]] && board[winConditions[i][0]] == board[winConditions[i][2]]) {
+		if(board[winConditions[i][0]] == player && board[winConditions[i][1]] == player && board[winConditions[i][2]] == player) {
 			return winConditions[i];
 		}
 	}
