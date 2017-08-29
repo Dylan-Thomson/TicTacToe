@@ -67,6 +67,7 @@ function move(square) {
 		else {
 			player = "o";
 		}
+
 		square.addClass(player);
 		square.text(player);
 		board[$("td").index(square)] = player;
@@ -129,7 +130,7 @@ function aiMove() {
 
 function aiEasyMove() {
 	console.log("easy ai moving");
-	var emptySquares = getEmptySquares();
+	var emptySquares = getEmptySquares(board);
 	var randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
 	move($("td:eq(" + randomEmptySquare + ")"));
 }
@@ -138,7 +139,7 @@ function aiHardMove() {
 	console.log("hard ai moving");
 }
 
-function getEmptySquares() {
+function getEmptySquares(board) {
 	return board.filter(function(square) {
 		return !isNaN(square);
 	});
