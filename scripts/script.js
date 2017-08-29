@@ -19,6 +19,9 @@ function initListeners() {
 		move($(this));
 	});
 	$(".reset").on("click", function() {
+		reset();
+	});
+	$(".board .main-menu").on("click", function() {
 		fadeScreen(".board", ".select-game-mode", reset);
 	});
 	$(".two-player").on("click", function() {
@@ -51,7 +54,7 @@ function initListeners() {
 			aiMove();
 		}
 	});
-	$(".main-menu").on("click", function() {
+	$(".game-over .main-menu").on("click", function() {
 		fadeScreen(".game-over", ".select-game-mode");
 	});
 }
