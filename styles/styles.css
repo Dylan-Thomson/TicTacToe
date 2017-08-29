@@ -26,9 +26,9 @@ td:nth-of-type(2) {
 	border-left: .1em solid #283767;
 }
 
-td:hover {
+/*td:hover {
   background: #5285C4;
-}
+}*/
 
 .vertical-center {
   min-height: 100%;
@@ -38,6 +38,18 @@ td:hover {
   text-align: center;
 }
 
-.x:hover, .o:hover {
+/*.x:hover, .o:hover {
 	background: #6991C6;
+}*/
+
+.board {
+	display: none;
+}
+
+.select-xo {
+	display: none;
+}
+
+.game-over {
+	display: none;
 }

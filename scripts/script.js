@@ -1,188 +1,145 @@
+var board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 var turnX = true;
-var tds = $("td");
-var winConditions = [];
-var playerX;
-var easyAI = false;
-var hardAI = false;
+var human;
+var ai;
+var mode;
+var winConditions = [
+	[0, 1, 2], [3, 4, 5], [6, 7, 8],
+	[0, 3, 6], [1, 4, 7], [2, 5, 8],
+	[0, 4, 8], [2, 4, 6]
+];
 
 // Document Ready
 $(function() {
-	initWinConditions();
-	initGameModeListeners();
-	initMoveListeners();
-	initResetListener();
-	initSelectXOListeners();
+	initListeners();
 });
 
-function initGameModeListeners() {
+function initListeners() {
+	$("#0, #1, #2, #3, #4, #5, #6, #7, #8").on("click", function() {
+		move($(this));
+	});
+	$(".reset").on("click", function() {
+		fadeScreen(".board", ".select-game-mode", reset);
+	});
 	$(".two-player").on("click", function() {
-		displayBoard();
+		mode = "twoPlayer";
+		fadeScreen(".select-game-mode", ".board");
 	});
 	$(".ai-easy").on("click", function() {
-		displaySelectXO();
-		easyAI = true;
-		hardAI = false;
+		mode = "aiEasy";
+		fadeScreen(".select-game-mode", ".select-xo");
 	});
-}
-
-// TODO: do not allow player to click while AI is moving
-function initMoveListeners() {
-	$("td").on("click", function() {
-		if(!$(this).hasClass("x") && !$(this).hasClass("o")) {
-			if(turnX) {
-				$(this).addClass("x");
-				$(this).text("x");				
-			}
-			else {
-				$(this).addClass("o");
-				$(this).text("o");
-			}
-			endTurn($(this).attr("class"));
-		}
+	$(".ai-hard").on("click", function() {
+		mode = "aiHard";
+		fadeScreen(".select-game-mode", ".select-xo");
 	});
-}
-
-function endTurn(lastMove) {
-	turnX = !turnX;
-	if(!gameOver(lastMove) && playerX !== turnX){
-		if(easyAI) {
-			easyAIMove();
-		}
-		else if(hardAI) {
-
-		}
-	}
-}
-
-// Reset board and turnX, display start screen
-function initResetListener() {
-	$(".reset, .new-game").on("click", function() {
-		$("td").removeAttr("class");
-		$("td").text("");
-		turnX = true;
-		displayStart();
-	});
-}
-
-function initSelectXOListeners() {
 	$(".select-x").on("click", function() {
-		playerX = true;
-		displayBoard();
+		human = "x";
+		ai = "o";
+		fadeScreen(".select-xo", ".board");
 	});
 	$(".select-o").on("click", function() {
-		playerX = false;
-		displayBoard();
-		if(easyAI) {
-			easyAIMove();
-		}
-		else if(hardAI) {
-			hardAIMove();
-		}
+		human = "o";
+		ai = "x";
+		fadeScreen(".select-xo", ".board", function() {
+		aiMove();
+		});
 	});
 }
 
-function initWinConditions() {
-	winConditions.push($("tr:nth-of-type(1) td")); // row 1
-	winConditions.push($("tr:nth-of-type(2) td")); // row 2
-	winConditions.push($("tr:nth-of-type(3) td")); // row 3
-	winConditions.push($("td:nth-of-type(1)")); // col 1
-	winConditions.push($("td:nth-of-type(2)")); // col 2
-	winConditions.push($("td:nth-of-type(3)")); // col 3
-	winConditions.push($("tr:nth-of-type(1) td:nth-of-type(1), tr:nth-of-type(2) td:nth-of-type(2), tr:nth-of-type(3) td:nth-of-type(3)")); // diag L->R
-	winConditions.push($("tr:nth-of-type(1) td:nth-of-type(3), tr:nth-of-type(2) td:nth-of-type(2), tr:nth-of-type(3) td:nth-of-type(1)")); // diag R->L
+// Fade out previous class, fade in next class, optionally call func when done
+function fadeScreen(prev, next, func) {
+	$(prev).fadeOut("slow", function() {
+		$(next).fadeIn("slow", function() {
+			if(func) {
+				func();
+			}
+		});
+	});
 }
 
-// check if last move ends game
-function gameOver(lastMove) {
-	if(checkForWinner()) {
-		$(".game-over-msg").text(lastMove + " has won!");
-		displayGameOver();
-		return true;
+function move(square) {
+	if(!square.hasClass("x") && !square.hasClass("o")) {
+		var player;
+		if(turnX) {
+			player = "x";
+		}
+		else {
+			player = "o";
+		}
+		square.addClass(player);
+		square.text(player);
+		board[$("td").index(square)] = player;
+		turnX = ! turnX;
+		console.log(board);
+
+		if(winner(board)) {
+			alert(player + " has won!");
+			reset();
+			if(ai === "x") {
+				aiMove();
+			}
+		}
+		else if(draw(board)) {
+			alert("Draw...");
+			reset();			
+			if(ai === "x") {
+				aiMove();
+			}
+		}
+		else if((human === "x" && !turnX) || (human === "o" && turnX)) {
+			aiMove();
+		}
 	}
-	if(checkForDraw()) {
-		$(".game-over-msg").text("Draw...");
-		displayGameOver();
-		return true;
-	}
-	return false;
 }
 
-// check each win condition to see if met
-function checkForWinner() {
+function reset() {
+	$("td").removeAttr("class");
+	$("td").text("");
+	turnX = true;
+	board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+}
+
+function winner(board) {
 	for(var i = 0; i < winConditions.length; i++) {
-		if(checkWinCondition(winConditions[i])) {
+		if(board[winConditions[i][0]] == board[winConditions[i][1]] && board[winConditions[i][0]] == board[winConditions[i][2]]) {
 			return true;
 		}
 	}
 	return false;
 }
 
-// check a win condition to see if met
-function checkWinCondition(arr) {
-	for(var i = 0; i < arr.length; i++) {
-		// current square is empty
-		if(!arr[i].attributes.class) { 
-			return false;
-		}
-		// current square has a different symbol than first square
-		if(i > 0 && arr[0].attributes.class.nodeValue !== arr[i].attributes.class.nodeValue) {
+function draw(board) {
+	for(var i = 0; i < board.length; i++) {
+		if(!isNaN(board[i])) {
 			return false;
 		}
 	}
 	return true;
 }
 
-// check for empty squares
-function checkForDraw() {
-	for(var i = 0; i < tds.length; i++) {
-		if(!tds[i].attributes.class) {
-			return false;
-		}
+function aiMove() {
+	if(mode === "aiEasy") {
+		aiEasyMove();
 	}
-	return true;
+	else if(mode === "aiHard") {
+		aiHardMove();
+	}
 }
 
-function easyAIMove() {
-	console.log("EASY AI MOVING");
-	//get empty squares
-	var emptySquares = $("td").not(".x, .o");
-
-	//pick a random empty square
+function aiEasyMove() {
+	console.log("easy ai moving");
+	var emptySquares = getEmptySquares();
 	var randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
-
-	// make move
-		$("td:eq(" + tds.toArray().indexOf(randomEmptySquare) + ")").trigger("click");
-	// window.setTimeout(function() {
-	// 	$("td:eq(" + tds.toArray().indexOf(randomEmptySquare) + ")").trigger("click");
-	// }, 500);
+	move($("td:eq(" + randomEmptySquare + ")"));
 }
 
-function hardAIMove() {
-	//minimax
+function aiHardMove() {
+	console.log("hard ai moving");
 }
 
-function displayBoard() {
-	$(".board").removeClass("hidden");
-	$(".select-game-mode").addClass("hidden");
-	$(".game-over").addClass("hidden");
-	$(".select-xo").addClass("hidden");
-}
-
-function displayStart() {
-	$(".select-game-mode").removeClass("hidden");
-	$(".board").addClass("hidden");
-	$(".game-over").addClass("hidden");
-	$(".select-xo").addClass("hidden");
-}
-
-function displayGameOver() {
-	$(".game-over").removeClass("hidden");
-	$(".select-game-mode").addClass("hidden");
-	$(".board").addClass("hidden");
-	$(".select-xo").addClass("hidden");
-}
-
-function displaySelectXO() {
-	$(".select-xo").removeClass("hidden");
-	$(".select-game-mode").addClass("hidden");
+function getEmptySquares() {
+	return board.filter(function(square) {
+		return !isNaN(square);
+	});
 }
