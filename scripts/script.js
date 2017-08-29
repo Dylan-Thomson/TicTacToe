@@ -45,6 +45,15 @@ function initListeners() {
 		aiMove();
 		});
 	});
+	$(".play-again").on("click", function() {
+		fadeScreen(".game-over", ".board");
+		if(ai === "x") {
+			aiMove();
+		}
+	});
+	$(".main-menu").on("click", function() {
+		fadeScreen(".game-over", ".select-game-mode");
+	});
 }
 
 // Fade out previous class, fade in next class, optionally call func when done
@@ -75,18 +84,12 @@ function move(square) {
 		console.log(board);
 
 		if(winner(board)) {
-			alert(player + " has won!");
-			reset();
-			if(ai === "x") {
-				aiMove();
-			}
+			$(".game-over-msg").text(player + " has won!");
+			fadeScreen(".board", ".game-over", reset);
 		}
 		else if(draw(board)) {
-			alert("Draw...");
-			reset();			
-			if(ai === "x") {
-				aiMove();
-			}
+			$(".game-over-msg").text("Draw...");
+			fadeScreen(".board", ".game-over", reset);
 		}
 		else if((human === "x" && !turnX) || (human === "o" && turnX)) {
 			aiMove();
@@ -104,7 +107,7 @@ function reset() {
 function winner(board) {
 	for(var i = 0; i < winConditions.length; i++) {
 		if(board[winConditions[i][0]] == board[winConditions[i][1]] && board[winConditions[i][0]] == board[winConditions[i][2]]) {
-			return true;
+			return winConditions[i];
 		}
 	}
 	return false;
