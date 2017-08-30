@@ -3,6 +3,7 @@ var turnX = true;
 var human;
 var ai;
 var mode;
+var boardActive = false;
 var winConditions = [
 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
 	[0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -16,17 +17,27 @@ $(function() {
 
 function initListeners() {
 	$("#0, #1, #2, #3, #4, #5, #6, #7, #8").on("click", function() {
-		move($(this));
+		if(boardActive) {
+			move($(this));
+		}
 	});
 	$(".reset").on("click", function() {
-		reset();
+		resetBoard();
+		if(ai === "x") {
+			aiMove();
+		}
 	});
 	$(".board .main-menu").on("click", function() {
-		fadeScreen(".board", ".select-game-mode", reset);
+		fadeScreen(".board", ".select-game-mode", function() {
+			resetBoard();
+			boardActive = false;
+		});
 	});
 	$(".two-player").on("click", function() {
 		mode = "twoPlayer";
-		fadeScreen(".select-game-mode", ".board");
+		fadeScreen(".select-game-mode", ".board", function() {
+			boardActive = true;
+		});
 	});
 	$(".ai-easy").on("click", function() {
 		mode = "aiEasy";
@@ -39,13 +50,15 @@ function initListeners() {
 	$(".select-x").on("click", function() {
 		human = "x";
 		ai = "o";
-		fadeScreen(".select-xo", ".board");
+		fadeScreen(".select-xo", ".board", function() {
+			boardActive = true;
+		});
 	});
 	$(".select-o").on("click", function() {
 		human = "o";
 		ai = "x";
 		fadeScreen(".select-xo", ".board", function() {
-		aiMove();
+			aiMove();
 		});
 	});
 	$(".play-again").on("click", function() {
@@ -55,7 +68,9 @@ function initListeners() {
 		}
 	});
 	$(".game-over .main-menu").on("click", function() {
-		fadeScreen(".game-over", ".select-game-mode");
+		fadeScreen(".game-over", ".select-game-mode", function() {
+			boardActive = false;
+		});
 	});
 }
 
@@ -88,11 +103,17 @@ function move(square) {
 
 		if(winner(board, player)) {
 			$(".game-over-msg").text(player + " has won!");
-			fadeScreen(".board", ".game-over", reset);
+			fadeScreen(".board", ".game-over", resetBoard);
+			// $(".game-over").fadeIn("slow", function() {
+			// 	resetBoard();
+			// })
 		}
 		else if(draw(board)) {
 			$(".game-over-msg").text("Draw...");
-			fadeScreen(".board", ".game-over", reset);
+			fadeScreen(".board", ".game-over", resetBoard);
+			// $(".game-over").fadeIn("slow", function() {
+			// 	resetBoard();
+			// })
 		}
 		else if((human === "x" && !turnX) || (human === "o" && turnX)) {
 			aiMove();
@@ -100,7 +121,7 @@ function move(square) {
 	}
 }
 
-function reset() {
+function resetBoard() {
 	$("td").removeAttr("class");
 	$("td").text("");
 	turnX = true;
@@ -135,10 +156,14 @@ function aiMove() {
 }
 
 function aiEasyMove() {
+	boardActive = false;
 	console.log("easy ai moving");
 	var emptySquares = getEmptySquares(board);
 	var randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
-	move($("td:eq(" + randomEmptySquare + ")"));
+	window.setTimeout(function() {
+		move($("td:eq(" + randomEmptySquare + ")"));
+		boardActive = true;
+	}, 500);
 }
 
 function aiHardMove() {
