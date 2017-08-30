@@ -2,6 +2,8 @@ var board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 var turnX = true;
 var human;
 var ai;
+var xScore = 0;
+var oScore = 0;
 var mode;
 var boardActive = false;
 var winConditions = [
@@ -30,6 +32,7 @@ function initListeners() {
 	$(".board .main-menu").on("click", function() {
 		fadeScreen(".board", ".select-game-mode", function() {
 			resetBoard();
+			resetScore();
 			boardActive = false;
 		});
 	});
@@ -69,6 +72,7 @@ function initListeners() {
 	});
 	$(".game-over .main-menu").on("click", function() {
 		fadeScreen(".game-over", ".select-game-mode", function() {
+			resetScore();
 			boardActive = false;
 		});
 	});
@@ -102,6 +106,7 @@ function move(square) {
 		console.log(board);
 
 		if(winner(board, player)) {
+			updateScore(player);
 			$(".game-over-msg").text(player + " has won!");
 			fadeScreen(".board", ".game-over", resetBoard);
 			// $(".game-over").fadeIn("slow", function() {
@@ -126,6 +131,24 @@ function resetBoard() {
 	$("td").text("");
 	turnX = true;
 	board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+}
+
+function resetScore() {
+	xScore = 0;
+	$(".xScore").text(xScore);
+	oScore = 0;
+	$(".oScore").text(oScore);
+}
+
+function updateScore(player) {
+	if(player === "x") {
+		xScore++;
+		$(".xScore").text(xScore);
+	}
+	else if(player === "o") {
+		oScore++;
+		$(".oScore").text(oScore);
+	}
 }
 
 function winner(board, player) {
