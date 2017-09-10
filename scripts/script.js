@@ -12,6 +12,7 @@ var winConditions = [
 	[0, 4, 8], [2, 4, 6]
 ];
 
+
 // Document Ready
 $(function() {
 	initListeners();
@@ -102,23 +103,17 @@ function move(square) {
 		square.addClass(player);
 		square.text(player);
 		board[$("td").index(square)] = player;
-		turnX = ! turnX;
+		updateTurn();
 		console.log(board);
 
 		if(winner(board, player)) {
 			updateScore(player);
 			$(".game-over-msg").text(player + " has won!");
 			fadeScreen(".board", ".game-over", resetBoard);
-			// $(".game-over").fadeIn("slow", function() {
-			// 	resetBoard();
-			// })
 		}
 		else if(draw(board)) {
 			$(".game-over-msg").text("Draw...");
 			fadeScreen(".board", ".game-over", resetBoard);
-			// $(".game-over").fadeIn("slow", function() {
-			// 	resetBoard();
-			// })
 		}
 		else if((human === "x" && !turnX) || (human === "o" && turnX)) {
 			aiMove();
@@ -130,6 +125,7 @@ function resetBoard() {
 	$("td").removeAttr("class");
 	$("td").text("");
 	turnX = true;
+	$(".current-turn").text("X");
 	board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 }
 
@@ -148,6 +144,16 @@ function updateScore(player) {
 	else if(player === "o") {
 		oScore++;
 		$(".oScore").text(oScore);
+	}
+}
+
+function updateTurn() {
+	turnX = !turnX;
+	if(turnX) {
+		$(".current-turn").text("X");
+	}
+	else {
+		$(".current-turn").text("O");
 	}
 }
 
