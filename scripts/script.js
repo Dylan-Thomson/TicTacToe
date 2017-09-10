@@ -196,7 +196,69 @@ function aiEasyMove() {
 }
 
 function aiHardMove() {
+	boardActive = false;
 	console.log("hard ai moving");
+	window.setTimeout(function() {
+		move($("td:eq(" + minimax(board, ai).index + ")"));
+		boardActive = true;
+	}, 500);
+}
+
+function minimax(newBoard, player) {
+	var emptySquares = getEmptySquares(newBoard);
+	if(winner(newBoard, human)) {
+		return {score: -10};
+	}
+	else if(winner(newBoard, ai)) {
+		return {score: 10};
+	}
+	else if(emptySquares.length === 0) {
+		return {score: 0};
+	}
+
+	var moves = [];
+
+	for(var i = 0; i < emptySquares.length; i++) {
+		var move = {};
+		move.index = newBoard[emptySquares[i]]
+
+		newBoard[emptySquares[i]] = player;
+
+		if(player === ai) {
+			var result = minimax(newBoard, human);
+			move.score = result.score;
+		}
+		else{
+			var result = minimax(newBoard, ai);
+			move.score = result.score;
+		}
+
+		newBoard[emptySquares[i]] = move.index;
+
+		moves.push(move);
+	}	
+
+	var bestMove;
+	if(player === ai) {
+		var bestScore = -10000;
+		for(var i = 0; i < moves.length; i++) {
+			if(moves[i].score > bestScore) {
+				bestScore = moves[i].score;
+				bestMove = i;
+			}
+		}
+	}
+	else {
+		var bestScore = 10000;
+		for(var i = 0; i < moves.length; i++) {
+			if(moves[i].score < bestScore) {
+				bestScore = moves[i].score;
+				bestMove = i;
+			}
+		}
+	}
+
+	return moves[bestMove];
 }
 
 function getEmptySquares(board) {
