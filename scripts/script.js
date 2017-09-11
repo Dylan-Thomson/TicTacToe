@@ -106,10 +106,16 @@ function move(square) {
 		updateTurn();
 		console.log(board);
 
-		if(winner(board, player)) {
-			updateScore(player);
-			$(".game-over-msg").text(player + " has won!");
-			fadeScreen(".board", ".game-over", resetBoard);
+		var winningSquares = winner(board, player);
+		if(winningSquares) {
+			winningSquares.forEach(function(square) {
+				$("td:eq(" + square + ")").addClass("winning-square");
+			});
+			setTimeout(function() {
+				updateScore(player);
+				$(".game-over-msg").text(player + " has won!");
+				fadeScreen(".board", ".game-over", resetBoard);
+			}, 500);
 		}
 		else if(draw(board)) {
 			$(".game-over-msg").text("Draw...");
@@ -257,7 +263,6 @@ function minimax(newBoard, player) {
 			}
 		}
 	}
-
 	return moves[bestMove];
 }
 
