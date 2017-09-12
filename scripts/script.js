@@ -6,12 +6,12 @@ var xScore = 0;
 var oScore = 0;
 var mode;
 var boardActive = false;
+var fading = false;
 var winConditions = [
 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
 	[0, 3, 6], [1, 4, 7], [2, 5, 8],
 	[0, 4, 8], [2, 4, 6]
 ];
-
 
 // Document Ready
 $(function() {
@@ -25,67 +25,88 @@ function initListeners() {
 		}
 	});
 	$(".reset").on("click", function() {
-		resetBoard();
-		if(ai === "x") {
-			aiMove();
+		if(!fading) {
+			resetBoard();
+			if(ai === "x") {
+				aiMove();
+			}
 		}
 	});
 	$(".board .main-menu").on("click", function() {
-		fadeScreen(".board", ".select-game-mode", function() {
-			resetBoard();
-			resetScore();
-			boardActive = false;
-		});
+		if(!fading) {
+			fadeScreen(".board", ".select-game-mode", function() {
+				resetBoard();
+				resetScore();
+				boardActive = false;
+			});
+		}
 	});
 	$(".two-player").on("click", function() {
-		mode = "twoPlayer";
-		fadeScreen(".select-game-mode", ".board", function() {
-			boardActive = true;
-		});
+		if(!fading) {
+			mode = "twoPlayer";
+			fadeScreen(".select-game-mode", ".board", function() {
+				boardActive = true;
+			});
+		}
 	});
 	$(".ai-easy").on("click", function() {
-		mode = "aiEasy";
-		fadeScreen(".select-game-mode", ".select-xo");
+		if(!fading) {
+			mode = "aiEasy";
+			fadeScreen(".select-game-mode", ".select-xo");
+		}
 	});
 	$(".ai-hard").on("click", function() {
-		mode = "aiHard";
-		fadeScreen(".select-game-mode", ".select-xo");
+		if(!fading) {
+			mode = "aiHard";
+			fadeScreen(".select-game-mode", ".select-xo");
+		}
 	});
 	$(".select-x").on("click", function() {
-		human = "x";
-		ai = "o";
-		fadeScreen(".select-xo", ".board", function() {
-			boardActive = true;
-		});
+		if(!fading) {
+			human = "x";
+			ai = "o";
+			fadeScreen(".select-xo", ".board", function() {
+				boardActive = true;
+			});
+		}
 	});
 	$(".select-o").on("click", function() {
-		human = "o";
-		ai = "x";
-		fadeScreen(".select-xo", ".board", function() {
-			aiMove();
-		});
+		if(!fading) {
+			human = "o";
+			ai = "x";
+			fadeScreen(".select-xo", ".board", function() {
+				aiMove();
+			});
+		}
 	});
 	$(".play-again").on("click", function() {
-		fadeScreen(".game-over", ".board");
-		if(ai === "x") {
-			aiMove();
+		if(!fading) {
+			fadeScreen(".game-over", ".board");
+			boardActive = true;
+			if(ai === "x") {
+				aiMove();
+			}
 		}
 	});
 	$(".game-over .main-menu").on("click", function() {
-		fadeScreen(".game-over", ".select-game-mode", function() {
-			resetScore();
-			boardActive = false;
-		});
+		if(!fading) {
+			fadeScreen(".game-over", ".select-game-mode", function() {
+				resetScore();
+				boardActive = false;
+			});
+		}
 	});
 }
 
 // Fade out previous class, fade in next class, optionally call func when done
 function fadeScreen(prev, next, func) {
+	fading = true;
 	$(prev).fadeOut("slow", function() {
 		$(next).fadeIn("slow", function() {
 			if(func) {
 				func();
 			}
+			fading = false;
 		});
 	});
 }
@@ -106,8 +127,10 @@ function move(square) {
 		updateTurn();
 		console.log(board);
 
+		// Check for winner or draw, then take AI turn
 		var winningSquares = winner(board, player);
 		if(winningSquares) {
+			boardActive = false;
 			winningSquares.forEach(function(square) {
 				$("td:eq(" + square + ")").addClass("winning-square");
 			});
@@ -190,6 +213,7 @@ function aiMove() {
 	}
 }
 
+// Picks a random empty square
 function aiEasyMove() {
 	boardActive = false;
 	console.log("easy ai moving");
@@ -201,6 +225,7 @@ function aiEasyMove() {
 	}, 500);
 }
 
+// Uses minimax to pick the best empty square
 function aiHardMove() {
 	boardActive = false;
 	console.log("hard ai moving");
