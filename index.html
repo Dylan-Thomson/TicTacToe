@@ -11,59 +11,62 @@
 
 <div class="container-fluid">
 	<h1>Tic Tac Toe</h1>
-	<div class="row board">
-		<div class="col-xs-12">
-			<div class="scoreboard">
-				X: <span class="xScore">0</span>
-				O: <span class="oScore">0</span>
+	<div class="screen">
+		<div class="row board">
+			<div class="col-xs-12">
+				<div class="scoreboard">
+					X: <span class="xScore">0</span>
+					O: <span class="oScore">0</span>
+				</div>
+				<div class="turn-display">
+					<span class="current-turn">X</span>'s Turn
+				</div>
+				<table>
+					<tr>
+						<td id="0"></td>
+						<td id="1"></td>
+						<td id="2"></td>
+					</tr>	
+					<tr>
+						<td id="3"></td>
+						<td id="4"></td>
+						<td id="5"></td>
+					</tr>	
+					<tr>
+						<td id="6"></td>
+						<td id="7"></td>
+						<td id="8"></td>
+					</tr>
+				</table>		
+				<button class="reset" type="button">Reset</button>
+				<button class="main-menu" type="button">Main Menu</button>
 			</div>
-			<div class="turn-display">
-				<span class="current-turn">X</span>'s Turn
+		</div>
+		<div class="row select-game-mode">
+			<div class="col-xs-12">
+				<h2>Select Mode</h2>
+				<button class="two-player" type="button">Two Player</button>
+				<button class="ai-easy" type="button">Easy AI</button>
+				<button class="ai-hard" type="button">Hard AI</button>
 			</div>
-			<table>
-				<tr>
-					<td id="0"></td>
-					<td id="1"></td>
-					<td id="2"></td>
-				</tr>	
-				<tr>
-					<td id="3"></td>
-					<td id="4"></td>
-					<td id="5"></td>
-				</tr>	
-				<tr>
-					<td id="6"></td>
-					<td id="7"></td>
-					<td id="8"></td>
-				</tr>
-			</table>		
-			<button class="reset" type="button">Reset</button>
-			<button class="main-menu" type="button">Main Menu</button>
+		</div>
+		<div class="row select-xo">
+			<div class="col-xs-12">
+				<h2>Select X or O</h2>
+				<button class="select-x" type="button">X</button>
+				<button class="select-o" type="button">O</button>
+			</div>
+		</div>
+		<div class="row game-over">
+			<div class="col-xs-12">
+				<h2>Game Over</h2>
+				<p class="game-over-msg"></p>
+				<button class="play-again" type="button">Play Again</button>
+				<button class="main-menu" type="button">Main Menu</button>
+			</div>
 		</div>
 	</div>
-	<div class="row select-game-mode">
-		<div class="col-xs-12">
-			<h2>Select Game Mode</h2>
-			<button class="two-player" type="button">Two Player</button>
-			<button class="ai-easy" type="button">Easy AI</button>
-			<button class="ai-hard" type="button">Hard AI</button>
-		</div>
-	</div>
-	<div class="row select-xo">
-		<div class="col-xs-12">
-			<h2>Select X or O</h2>
-			<button class="select-x" type="button">X</button>
-			<button class="select-o" type="button">O</button>
-		</div>
-	</div>
-	<div class="row game-over">
-		<div class="col-xs-12">
-			<h2>Game Over</h2>
-			<p class="game-over-msg"></p>
-			<button class="play-again" type="button">Play Again</button>
-			<button class="main-menu" type="button">Main Menu</button>
-		</div>
-	</div>
+	<p>Created by Dylan Thomson</p>
 </div>
 
 
