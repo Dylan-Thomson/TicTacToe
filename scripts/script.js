@@ -153,35 +153,35 @@ function resetBoard() {
 	$("td").removeAttr("class");
 	$("td").text("");
 	isTurnX = true;
-	$(".current-turn").text("X");
+	$(".current-turn-label").text("X");
 	board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 }
 
 function resetScore() {
 	xScore = 0;
-	$(".xScore").text(xScore);
+	$(".x-score-label").text(xScore);
 	oScore = 0;
-	$(".oScore").text(oScore);
+	$(".o-score-label").text(oScore);
 }
 
 function updateScore(player) {
 	if(player === "x") {
 		xScore++;
-		$(".xScore").text(xScore);
+		$(".x-score-label").text(xScore);
 	}
 	else if(player === "o") {
 		oScore++;
-		$(".oScore").text(oScore);
+		$(".o-score-label").text(oScore);
 	}
 }
 
 function updateTurn() {
 	isTurnX = !isTurnX;
 	if(isTurnX) {
-		$(".current-turn").text("X");
+		$(".current-turn-label").text("X");
 	}
 	else {
-		$(".current-turn").text("O");
+		$(".current-turn-label").text("O");
 	}
 }
 
