@@ -1,12 +1,12 @@
 var board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-var turnX = true;
+var gameMode;
 var human;
 var ai;
 var xScore = 0;
 var oScore = 0;
-var mode;
-var boardActive = false;
-var fading = false;
+var isTurnX = true;
+var isBoardActive = false;
+var isFading = false;
 var winConditions = [
 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
 	[0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -20,12 +20,12 @@ $(function() {
 
 function initListeners() {
 	$("#0, #1, #2, #3, #4, #5, #6, #7, #8").on("click", function() {
-		if(boardActive) {
+		if(isBoardActive) {
 			move($(this));
 		}
 	});
 	$(".reset").on("click", function() {
-		if(!fading) {
+		if(!isFading) {
 			resetBoard();
 			if(ai === "x") {
 				aiMove();
@@ -33,45 +33,45 @@ function initListeners() {
 		}
 	});
 	$(".board .main-menu").on("click", function() {
-		if(!fading) {
+		if(!isFading) {
 			fadeScreen(".board", ".select-game-mode", function() {
 				resetBoard();
 				resetScore();
-				boardActive = false;
+				isBoardActive = false;
 			});
 		}
 	});
 	$(".two-player").on("click", function() {
-		if(!fading) {
-			mode = "twoPlayer";
+		if(!isFading) {
+			gameMode = "twoPlayer";
 			fadeScreen(".select-game-mode", ".board", function() {
-				boardActive = true;
+				isBoardActive = true;
 			});
 		}
 	});
 	$(".ai-easy").on("click", function() {
-		if(!fading) {
-			mode = "aiEasy";
+		if(!isFading) {
+			gameMode = "aiEasy";
 			fadeScreen(".select-game-mode", ".select-xo");
 		}
 	});
 	$(".ai-hard").on("click", function() {
-		if(!fading) {
-			mode = "aiHard";
+		if(!isFading) {
+			gameMode = "aiHard";
 			fadeScreen(".select-game-mode", ".select-xo");
 		}
 	});
 	$(".select-x").on("click", function() {
-		if(!fading) {
+		if(!isFading) {
 			human = "x";
 			ai = "o";
 			fadeScreen(".select-xo", ".board", function() {
-				boardActive = true;
+				isBoardActive = true;
 			});
 		}
 	});
 	$(".select-o").on("click", function() {
-		if(!fading) {
+		if(!isFading) {
 			human = "o";
 			ai = "x";
 			fadeScreen(".select-xo", ".board", function() {
@@ -80,19 +80,19 @@ function initListeners() {
 		}
 	});
 	$(".play-again").on("click", function() {
-		if(!fading) {
+		if(!isFading) {
 			fadeScreen(".game-over", ".board");
-			boardActive = true;
+			isBoardActive = true;
 			if(ai === "x") {
 				aiMove();
 			}
 		}
 	});
 	$(".game-over .main-menu").on("click", function() {
-		if(!fading) {
+		if(!isFading) {
 			fadeScreen(".game-over", ".select-game-mode", function() {
 				resetScore();
-				boardActive = false;
+				isBoardActive = false;
 			});
 		}
 	});
@@ -100,13 +100,13 @@ function initListeners() {
 
 // Fade out previous class, fade in next class, optionally call func when done
 function fadeScreen(prev, next, func) {
-	fading = true;
+	isFading = true;
 	$(prev).fadeOut("slow", function() {
 		$(next).fadeIn("slow", function() {
 			if(func) {
 				func();
 			}
-			fading = false;
+			isFading = false;
 		});
 	});
 }
@@ -114,23 +114,22 @@ function fadeScreen(prev, next, func) {
 function move(square) {
 	if(!square.hasClass("x") && !square.hasClass("o")) {
 		var player;
-		if(turnX) {
+		if(isTurnX) {
 			player = "x";
 		}
 		else {
 			player = "o";
 		}
-
 		square.addClass(player);
 		square.text(player);
 		board[$("td").index(square)] = player;
 		updateTurn();
 		console.log(board);
 
-		// Check for winner or draw, then take AI turn
+		// Check for winner or draw. Take AI turn if player has just moved
 		var winningSquares = winner(board, player);
 		if(winningSquares) {
-			boardActive = false;
+			isBoardActive = false;
 			winningSquares.forEach(function(square) {
 				$("td:eq(" + square + ")").addClass("winning-square");
 			});
@@ -144,7 +143,7 @@ function move(square) {
 			$(".game-over-msg").text("Draw...");
 			fadeScreen(".board", ".game-over", resetBoard);
 		}
-		else if((human === "x" && !turnX) || (human === "o" && turnX)) {
+		else if((human === "x" && !isTurnX) || (human === "o" && isTurnX)) {
 			aiMove();
 		}
 	}
@@ -153,7 +152,7 @@ function move(square) {
 function resetBoard() {
 	$("td").removeAttr("class");
 	$("td").text("");
-	turnX = true;
+	isTurnX = true;
 	$(".current-turn").text("X");
 	board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 }
@@ -177,8 +176,8 @@ function updateScore(player) {
 }
 
 function updateTurn() {
-	turnX = !turnX;
-	if(turnX) {
+	isTurnX = !isTurnX;
+	if(isTurnX) {
 		$(".current-turn").text("X");
 	}
 	else {
@@ -205,33 +204,33 @@ function draw(board) {
 }
 
 function aiMove() {
-	if(mode === "aiEasy") {
+	if(gameMode === "aiEasy") {
 		aiEasyMove();
 	}
-	else if(mode === "aiHard") {
+	else if(gameMode === "aiHard") {
 		aiHardMove();
 	}
 }
 
 // Picks a random empty square
 function aiEasyMove() {
-	boardActive = false;
+	isBoardActive = false;
 	console.log("easy ai moving");
 	var emptySquares = getEmptySquares(board);
 	var randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
 	window.setTimeout(function() {
 		move($("td:eq(" + randomEmptySquare + ")"));
-		boardActive = true;
+		isBoardActive = true;
 	}, 500);
 }
 
 // Uses minimax to pick the best empty square
 function aiHardMove() {
-	boardActive = false;
+	isBoardActive = false;
 	console.log("hard ai moving");
 	window.setTimeout(function() {
 		move($("td:eq(" + minimax(board, ai).index + ")"));
-		boardActive = true;
+		isBoardActive = true;
 	}, 500);
 }
 
