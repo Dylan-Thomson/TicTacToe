@@ -22,6 +22,7 @@ $(function() {
 function initListeners() {
 	$("#0, #1, #2, #3, #4, #5, #6, #7, #8").on("click", function() {
 		if(isBoardActive) {
+			console.log("human moving");
 			move($(this));
 		}
 	});
@@ -136,6 +137,7 @@ function move(square) {
 			winningSquares.forEach(function(square) {
 				$("td:eq(" + square + ")").addClass("winning-square");
 			});
+			// Delay screen fade so user can see highlighted winning squares
 			setTimeout(function() {
 				updateScore(player);
 				$(".game-over-msg").text(player + " has won!");
