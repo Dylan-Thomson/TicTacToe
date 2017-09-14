@@ -84,7 +84,9 @@ function initListeners() {
 			fadeScreen(".game-over", ".board");
 			isBoardActive = true;
 			if(ai === "x") {
-				aiMove();
+				setTimeout(function() {
+					aiMove();
+				}, 500);
 			}
 		}
 	});
