@@ -161,19 +161,19 @@ function resetBoard() {
 
 function resetScore() {
 	xScore = 0;
-	$(".x-score-label").text(xScore);
+	$(".x-score-value").text(xScore);
 	oScore = 0;
-	$(".o-score-label").text(oScore);
+	$(".o-score-value").text(oScore);
 }
 
 function updateScore(player) {
 	if(player === "x") {
 		xScore++;
-		$(".x-score-label").text(xScore);
+		$(".x-score-value").text(xScore);
 	}
 	else if(player === "o") {
 		oScore++;
-		$(".o-score-label").text(oScore);
+		$(".o-score-value").text(oScore);
 	}
 }
 
