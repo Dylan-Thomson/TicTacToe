@@ -4,6 +4,7 @@ var human;
 var ai;
 var xScore = 0;
 var oScore = 0;
+var draws = 0;
 var isTurnX = true;
 var isBoardActive = false;
 var isFading = false;
@@ -143,6 +144,7 @@ function move(square) {
 		}
 		else if(draw(board)) {
 			$(".game-over-msg").text("Draw...");
+			updateDraw();
 			fadeScreen(".board", ".game-over", resetBoard);
 		}
 		else if((human === "x" && !isTurnX) || (human === "o" && isTurnX)) {
@@ -164,6 +166,8 @@ function resetScore() {
 	$(".x-score-value").text(xScore);
 	oScore = 0;
 	$(".o-score-value").text(oScore);
+	draws = 0;
+	$(".draw-value").text(draws);
 }
 
 function updateScore(player) {
@@ -175,6 +179,11 @@ function updateScore(player) {
 		oScore++;
 		$(".o-score-value").text(oScore);
 	}
+}
+
+function updateDraw() {
+	draws++;
+	$(".draw-value").text(draws);
 }
 
 function updateTurn() {
